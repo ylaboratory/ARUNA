@@ -1,10 +1,7 @@
 import pandas as pd
-
-pd.options.mode.chained_assignment = None
-
 import logging
 logger = logging.getLogger(__name__)
-
+pd.options.mode.chained_assignment = None
 
 
 def read_sample(filepath):

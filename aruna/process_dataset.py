@@ -43,7 +43,7 @@ import warnings
 
 CWD = os.getcwd()
 # canonical cpg set from hg38 - zero indexed
-hg38_metadata_dir = os.path.join(CWD, "data", "metadata")
+hg38_metadata_dir = Path(__file__).resolve().parent.parent / "data" / "metadata"
 hg38_all_df = pd.read_csv(os.path.join(hg38_metadata_dir, "hg38_cpg_py0idx.csv"))
 
 
