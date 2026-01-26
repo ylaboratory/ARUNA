@@ -2,7 +2,7 @@ import os
 import logging
 import numpy as np
 import pandas as pd
-from patch_metadata import get_mPatchPosn_metadata
+from aruna.patch_metadata import get_mPatchPosn_metadata
 
 logger = logging.getLogger(__name__)
 
