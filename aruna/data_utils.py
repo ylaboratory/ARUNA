@@ -1,7 +1,7 @@
 import logging
-from process_dataset import get_pc_gt, get_pc_noisy
-from data_engine import MPatchCentricDataset, ReplaceNaN, AddNoise, ToTensor, ToMValue
-from data_engine import MSliceCentricDataset
+from aruna.process_dataset import get_pc_gt, get_pc_noisy
+from aruna.data_engine import ReplaceNaN, AddNoise, ToTensor, ToMValue
+from aruna.data_engine import MSliceCentricDataset
 
 logger = logging.getLogger(__name__)
 

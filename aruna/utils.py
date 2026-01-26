@@ -85,6 +85,16 @@ def get_config(config_name):
 
 
 
+def get_splits(split_dir, exp_type):
+    
+    avail_splits = glob.glob(os.path.join(split_dir, "*.json"))
+    for f in avail_splits:
+        if f.split("/")[-1].split(".")[0] == exp_type:
+            split_file = f
+    with open(split_file, "rb") as f:
+            split_dict = json.load(f)
+    return(split_dict)
+
 
 def get_chrom_splits(split_dir, chrom_holdout):
     

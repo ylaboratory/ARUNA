@@ -2,6 +2,7 @@ import os
 import logging
 import numpy as np
 import pandas as pd
+from pathlib import Path
 from aruna.patch_metadata import get_mPatchPosn_metadata
 
 logger = logging.getLogger(__name__)
@@ -9,10 +10,8 @@ logger = logging.getLogger(__name__)
 
 
 # globals
-CWD = os.getcwd()
-patch_metadata_dir = os.path.join(CWD, "metadata")
-hg38_metadata_dir = os.path.join(patch_metadata_dir, "hg38_ref")
-hg38_chrLens_df = pd.read_csv(os.path.join(hg38_metadata_dir, 
+metadata_dir = Path(__file__).resolve().parent.parent / "data" / "metadata"
+hg38_chrLens_df = pd.read_csv(os.path.join(metadata_dir, 
                                            "hg38_chr_lengths.bedGraph"), 
                                            sep = "\t", header = None, 
                                            names = ["seqname", "start", "end"])
