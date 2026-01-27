@@ -52,105 +52,50 @@ def get_mpatches(dataset, chrom, patch_type, num_cpg, nr, seed, samp_list):
 
 
 
-def get_mslice_dataset(config, samp_split, inference = False):
+def get_mslice_dataset(config, samples, mode = "infer"):
+    
+     """
+     mode: {"train", "infer"}
+     """
 
      # resolve set of data transforms to apply based on provided config
-    transforms_list = [ReplaceNaN(replace_val = config["data"]["nan_sub"])]
-    if config["data"]["apply_noise"]:
-         mu = config["data"]["apply_noise"]["mu"]
-         sigma = config["data"]["apply_noise"]["sigma"]
-         transforms_list.append(AddNoise(mu, sigma))
-    if config["data"]["feat_type"] == "mvals":
-         transforms_list.append(ToMValue())
-    transforms_list.append(ToTensor("single"))
+     transforms_list = [ReplaceNaN(replace_val = config["data"]["nan_sub"])]
+     if config["data"]["apply_noise"]:
+          mu = config["data"]["apply_noise"]["mu"]
+          sigma = config["data"]["apply_noise"]["sigma"]
+          transforms_list.append(AddNoise(mu, sigma))
+     if config["data"]["feat_type"] == "mvals":
+          transforms_list.append(ToMValue())
+     transforms_list.append(ToTensor("single"))
 
-    train_samps = samp_split["Train"]
-    val_samps = samp_split["Validate"]
+     if mode == "train":
+          d = config["data"]["train_dataset"]
+          nr = config["exp"]["train_nr"]
+          repeats_ = config["data"]["train_spp"]
+     else:
+          d = config["data"]["test_dataset"]
+          nr = config["exp"]["test_nr"]
+          repeats_ = config["data"]["test_spp"]
 
-    if not inference:
-        print("Loading Training Data...")
-        gt_train, nr_train, simMask_train, cov_train = get_mpatches(config["data"]["train_dataset"], 
-                                                                    config["data"]["chrom"], 
-                                                                    config["data"]["kind"], 
-                                                                    config["data"]["num_cpgs"], 
-                                                                    config["exp"]["train_nr"],  
-                                                                    config["exp"]["sim_seed"],
-                                                                    train_samps)
-        trainData_obj = MSliceCentricDataset(train_samps, 
-                                         config["data"]["chrom"], 
-                                         config["data"]["num_cpgs"], 
-                                         gt_train, nr_train, 
-                                         simMask_train, cov_train, 
-                                         sps = config["data"]["sps"], 
-                                         spp = config["data"]["train_spp"], 
-                                         posn_embed = config["model"]["posn_embed"], 
-                                         transform = transforms_list)
-        
-        print("Loaded Training Data with {} samples and {} patches.".format(len(train_samps), 
-                                                                        len(trainData_obj)))
+     print("Loading Data...")
+     gt, nr, simMask, cov = get_mpatches(d,
+                                         config["data"]["chrom"],
+                                         config["data"]["kind"],
+                                         config["data"]["num_cpgs"],
+                                         nr, 
+                                         config["exp"]["sim_seed"], 
+                                         samples)
 
-    print("Loading Validation (or Testing) Data...")
-    gt_val, nr_val, simMask_val, cov_val = get_mpatches(config["data"]["test_dataset"],
-                                                        config["data"]["chrom"],
-                                                        config["data"]["kind"],
-                                                        config["data"]["num_cpgs"],
-                                                        config["exp"]["test_nr"], 
-                                                        config["exp"]["sim_seed"], 
-                                                        val_samps)
+     data_obj = MSliceCentricDataset(samples, 
+                                     config["data"]["chrom"], 
+                                     config["data"]["num_cpgs"], 
+                                     gt, nr, 
+                                     simMask, cov, 
+                                     sps = config["data"]["sps"], 
+                                     spp = repeats_, 
+                                     posn_embed = config["model"]["posn_embed"], 
+                                     transform = transforms_list)
 
-    valData_obj = MSliceCentricDataset(val_samps, 
-                                       config["data"]["chrom"], 
-                                       config["data"]["num_cpgs"], 
-                                       gt_val, nr_val, 
-                                       simMask_val, cov_val, 
-                                       sps = config["data"]["sps"], 
-                                       spp = config["data"]["test_spp"], 
-                                       posn_embed = config["model"]["posn_embed"], 
-                                       transform = transforms_list)
-
-    print("Loaded Validation Data with {} samples and {} patches.".format(len(val_samps), 
-                                                                          len(valData_obj)))
-    
-    if not inference:
-        return(trainData_obj, valData_obj)
-    else:
-        return(valData_obj)
-    
-
-
-
-def get_mslice_dataset_test(config, samples):
-
-     # resolve set of data transforms to apply based on provided config
-    transforms_list = [ReplaceNaN(replace_val = config["data"]["nan_sub"])]
-    if config["data"]["apply_noise"]:
-         mu = config["data"]["apply_noise"]["mu"]
-         sigma = config["data"]["apply_noise"]["sigma"]
-         transforms_list.append(AddNoise(mu, sigma))
-    if config["data"]["feat_type"] == "mvals":
-         transforms_list.append(ToMValue())
-    transforms_list.append(ToTensor("single"))
-
-
-    print("Loading Testing Data...")
-    gt_val, nr_val, simMask_val, cov_val = get_mpatches(config["data"]["test_dataset"],
-                                                        config["data"]["chrom"],
-                                                        config["data"]["kind"],
-                                                        config["data"]["num_cpgs"],
-                                                        config["exp"]["test_nr"], 
-                                                        config["exp"]["sim_seed"], 
-                                                        samples)
-
-    valData_obj = MSliceCentricDataset(samples, 
-                                       config["data"]["chrom"], 
-                                       config["data"]["num_cpgs"], 
-                                       gt_val, nr_val, 
-                                       simMask_val, cov_val, 
-                                       sps = config["data"]["sps"], 
-                                       spp = config["data"]["test_spp"], 
-                                       posn_embed = config["model"]["posn_embed"], 
-                                       transform = transforms_list)
-
-    print("Loaded Validation Data with {} samples and {} patches.".format(len(samples), 
-                                                                          len(valData_obj)))
-    return(valData_obj)
+     print("Loaded Data with {} samples and {} patches.".format(len(samples), 
+                                                                len(data_obj)))
+     return(data_obj)

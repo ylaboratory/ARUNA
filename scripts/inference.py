@@ -9,10 +9,10 @@ from aruna.models import DCAE_MSLICE
 from aruna.model_utils import get_peObj
 from torch.utils.data import DataLoader
 from aruna.process_dataset import get_cc_gt
-from aruna.data_utils import get_mslice_dataset_test
-from aruna.evaluations import process_seq, process_seq_test
-from aruna.model_engine import valid_step_mslice, test_step_mslice
-from aruna.evaluations import collate_mslices, collate_mslices_test
+from aruna.data_utils import get_mslice_dataset
+from aruna.evaluations import process_seq
+from aruna.model_engine import valid_step_mslice
+from aruna.evaluations import collate_mslices
 
 
 ### ----- INFERENCE HELPERS ----- ###
@@ -115,7 +115,7 @@ def run_mslice_inference(test_data, model_path,
     chr = config["data"]["chrom"]
     batch_dim = config["model"]["batch_dim"]
 
-    valData_obj = get_mslice_dataset_test(config, samples)
+    valData_obj = get_mslice_dataset(config, samples, mode = "infer")
     valloader = DataLoader(valData_obj, 
                         batch_size = batch_dim, 
                         shuffle = False, num_workers = 4) # shuffle False during inference
