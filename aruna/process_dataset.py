@@ -41,7 +41,7 @@ from tqdm import tqdm
 import warnings
 
 
-CWD = os.getcwd()
+CWD = Path(__file__).resolve().parent.parent
 # canonical cpg set from hg38 - zero indexed
 hg38_metadata_dir = Path(__file__).resolve().parent.parent / "data" / "metadata"
 hg38_all_df = pd.read_csv(os.path.join(hg38_metadata_dir, "hg38_cpg_py0idx.csv"))
@@ -138,6 +138,7 @@ def get_pc_gt(dataset, chrom, num_cpg = None,
                                              "ReadDepth", 
                                              c + "_patches.cov.pkl"))
         print("Looking for Ground-Truth Patchified {} files...".format(data_type.upper()))
+        print(save_path)
         if save_path.is_file():
             print("Patchified data found at: {}".format(save_path))
             with open(save_path, "rb") as f:

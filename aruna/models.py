@@ -237,10 +237,9 @@ class DCAE_MSLICE(nn.Module):
         for encoder_layer in self.encoder:
             x = encoder_layer(x)
             encoder_outputs.append(x)
-        encoder_embed = x
         
         # Decode
         for decoder_layer in self.decoder:
             x = decoder_layer(x)
 
-        return(x, encoder_embed)
+        return x

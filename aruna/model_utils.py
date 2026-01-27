@@ -18,6 +18,7 @@ hg38_chrLens_df = pd.read_csv(os.path.join(metadata_dir,
 hg38_chrLens_df['chr_num'] = hg38_chrLens_df['seqname'].str.extract(r'chr(\d+)', 
                                                                     expand=False).astype(int)
 hg38_chrLens_df = hg38_chrLens_df.sort_values(by='chr_num')
+hg38_allcpg_df = pd.read_csv(os.path.join(metadata_dir, "hg38_cpg_py0idx.csv"))
 
 
 
@@ -45,6 +46,7 @@ class PositionEmbedding():
                  offset = 0
             self.patch_refCpG_map[chrom] = get_mPatchPosn_metadata(chrom, 
                                                                    self.num_cpg,
+                                                                   hg38_allcpg_df,
                                                                    offset)
         logger.info("Patch-Position metadata mapping complete!")
         self.pe_dim = None # for type2

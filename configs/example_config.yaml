@@ -1,0 +1,45 @@
+name: DH-GTEx
+group: donor_holdout
+data:
+        train_dataset: gtex
+        test_dataset: gtex
+        chrom: chr21
+        kind: mpatch
+        num_cpgs: 128
+        feat_type: betas
+        nan_sub: 0.5
+        apply_noise: False
+        train_spp: 10
+        test_spp: 5
+        sps: 8
+exp:
+        train_nr: mcar_90
+        test_nr: rrbs_sim
+        split: donor_holdout
+        sim_seed: null
+model:
+        arch: dcae
+        posn_embed: type1_concat
+        stem_dict: null
+        kernel_sizes: [5,5,5,5,5]
+        out_channels: [32,64,128,128,256]
+        strides: [[1,1], [1,1], [2,2], [2,2], [2,2]]
+        activation: relu
+        last_activation: sigmoid
+        enc_last_activation: True
+        stem_activation: null
+        use_bnorm: False
+        stem_bnorm: null
+        num_epochs: 100
+        batch_dim: 256
+        learning_rate: 5.0e-4
+        l2_penalty: 0
+        criterion: mse
+        early_stop: True
+        es_steps: 5
+        es_delta: 1.0e-2
+        device: cuda:0
+log:
+        embeds: False
+        paramNorms: False
+notes: Donor holdout run for basic MSlice model. Chr21 used.
