@@ -8,7 +8,7 @@
 
 Whole-genome bisulfite sequencing (WGBS) provides near-comprehensive, base-resolution maps of DNA methylation, but its cost limits large-scale studies. Reduced representation bisulfite sequencing (RRBS) and related protocols offer cost-effective alternatives, but measure only a sparse subset of CpGs, creating substantial coverage mismatches across assays.
 
-**ARUNA** is a self-supervised denoising convolutional autoencoder designed to *upscale sparse, sequencing-based methylomes to whole-genome resolution*. ARUNA operates on **methylation slices**—spatially stacked genomic windows that preserve local CpG correlation and cross-sample structure—allowing it to generalize across assays, donors, tissues, and datasets.
+**ARUNA** is a self-supervised denoising convolutional autoencoder designed to *upscale sparse, sequencing-based methylomes to whole-genome resolution*. ARUNA operates on **methylation slices**: spatially stacked genomic windows that preserve local CpG correlation and cross-sample structure, allowing it to generalize across assays, donors, tissues, and datasets.
 
 This repository provides:
 1. Core ARUNA model and data-processing code.
