@@ -69,9 +69,9 @@ Large intermediate files and derived datasets are intentionally excluded from ve
 
 ## Data and Preprocessing
 
-### Bioinformatics preprocessing
+### Bioinformatics pipeline
 
-A reference WGBS preprocessing pipeline used to generate the input `.cov` files is provided in: ```assets/bioinfopipe_pairedWGBS.sh```.
+A reference WGBS preprocessing pipeline used to generate the input `.cov` files from FASTQ inputs is provided in: ```assets/bioinfopipe_pairedWGBS.sh```.
 
 
 ### Patch Creation
@@ -102,6 +102,7 @@ Located under: `data/metadata/`
 
 Includes:
 - Canonical CpG coordinates (hg38, 0-indexed)
+- Chromosome lengths (hg38)
 - Optional RRBS CpG observation probabilities for realistic rrbs-like missingness simulation
 
 
