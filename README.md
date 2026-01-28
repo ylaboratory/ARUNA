@@ -24,7 +24,7 @@ This repository provides:
 - [Repository Structure](#repository-structure)
 - [Data and Preprocessing](#data-and-preprocessing)
 - [Running the Examples](#running-the-examples)
-  - [Patchification](#patchification)
+  - [Data creation](#data-creation)
   - [Inference with a Pretrained Model](#inference-with-a-pretrained-model)
   - [Training a Model](#training-a-model)
 - [Notes on Reproducibility](#notes-on-reproducibility)
@@ -34,22 +34,17 @@ This repository provides:
 
 ## Installation
 
-Clone the repository:
 
 ```bash
+# Clone the repository:
 git clone https://github.com/ylaboratory/ARUNA.git
 cd ARUNA
-```
 
-Create and activate a Python environment (Python ≥ 3.9 recommended):
-
-```bash
+# Create and activate a Python environment (Python ≥ 3.9 recommended):
 conda create -n aruna python=3.11
 conda activate aruna
-```
 
-Install dependencies:
-```bash
+# Install dependencies:
 pip install -r requirements.txt
 ```
 
@@ -61,30 +56,29 @@ All scripts and notebooks assume execution from the repository root.
 ARUNA/
 ├── aruna/                  # Core model and data-processing code
 ├── checkpoints/            # Pretrained model checkpoints
-├── configs/                # Example configuration files
+├── configs/                # Example configuration YAML files
 ├── data/
 │   ├── gtex_subset/        # Example GTEx WGBS input data (chr21 only)
 │   ├── metadata/           # Reference genome and RRBS metadata    
 ├── notebooks/              # Example notebooks 
-├── scripts/                # Training, Inference helpers
+├── scripts/                # Inference helpers
 ├── results/                # Output storage
 └── requirements.txt
 ```
 Large intermediate files and derived datasets are intentionally excluded from version control.
 
 ## Data and Preprocessing
-ARUNA operates on two intermediate representations:
-### Chrom-centric
-- Shape: (num_cpgs, num_samples)
-- Canonical CpG set derived from the reference genome (hg38)
-- Stores fractional methylation and read depth
 
-### Patch-centric
-- Fixed-size windows defined by number of CpGs per patch
-- Enables convolutional modeling of local methylation structure
+### Bioinformatics preprocessing
 
-### Input data
-Input data are BED-like CpG-level methylation files (e.g. Bismark *.cov), organized as:
+A reference WGBS preprocessing pipeline used to generate the input `.cov` files is provided in: ```assets/bioinfopipe_pairedWGBS.sh```.
+
+
+### Patch Creation
+ARUNA operates on a patch-centric representation of the methylome and also creates chrom-centric data in the preprocessing pipeline.
+
+#### Input data
+Input data are BED-like CpG-level methylation files (e.g. Bismark *.cov) produced from the initial bioinformatics pipeline, organized as:
 
 ```text
 data/gtex_subset/
@@ -93,29 +87,35 @@ data/gtex_subset/
 ```
 An example GTEx subset (16 samples and chromosome 21 only) is included for demonstration.
 
+#### Chrom-centric
+- Shape: (num_cpgs, num_samples)
+- Canonical CpG set derived from the reference genome (hg38)
+- Stores fractional methylation and read depth
+
+#### Patch-centric
+- Fixed-size windows defined by number of CpGs per patch
+- Enables convolutional modeling of local methylation structure
+
+
 ### Reference metadata
-Located under:
-```bash
-data/metadata/
-```
+Located under: `data/metadata/`
+
 Includes:
 - Canonical CpG coordinates (hg38, 0-indexed)
 - Optional RRBS CpG observation probabilities for realistic rrbs-like missingness simulation
 
+
 ## Running the Examples
 
-### Patchification
-The first step converts sample-wise methylation files into chrom-centric and patch-centric formats.
+### Data creation
+The subsequent step converts sample-wise methylation files into chrom-centric and patch-centric formats.
 
 Relevant code:
 
 - ```aruna/process_dataset.py```
 - ```aruna/patch_metadata.py```
 
-Example notebook:
-```bash
-notebooks/data_prep.ipynb
-```
+Example notebook: `notebooks/data_prep.ipynb`
 
 Running this notebook produces:
 
@@ -133,11 +133,20 @@ data/gtex/
 ```
 
 ### Inference with a Pretrained Model
-- A pretrained ARUNA model is provided in: ```checkpoints/trained_model.pth```
-- You can run inference using: ```notebooks/example_infer.ipynb```
-- Predicted methylation values and evaluation artifacts will be written to: ```results/```
+- A pretrained ARUNA model is provided in: ```checkpoints/trained_model.pth```.
+- You can run inference using: ```notebooks/example_infer.ipynb```.
+- Predicted methylation values and evaluation artifacts will be written to: ```results/```.
 
 ### Training a Model
+
+An example training workflow is provided in: `notebooks/example_train.ipynb`.
+
+This notebook demonstrates:
+- Loading and batching training data.
+- Initializing and training ARUNA from scratch on simulated sparse methylomes.
+- Saving model checkpoints for downstream inference to: ```checkpoints/```.
+
+Note: Training is computationally intensive and was performed on GPU hardware for the experiments reported in the paper.
 
 ## Reproducibility Notes
 - Example data are restricted to chromosome 21 for tractability.
